@@ -25,8 +25,8 @@ class EditContactScreen extends StatelessWidget {
       }
 
       final provider = Provider.of<ContactProvider>(context, listen: false);
-      bool isDuplicate = provider.contacts.any((c) =>
-          c.phone == cleanedPhone && c.id != contact?.id);
+      bool isDuplicate = provider.contacts
+          .any((c) => c.phone == cleanedPhone && c.id != contact?.id);
       if (isDuplicate) return 'This phone number is already in use';
 
       return null;
@@ -43,8 +43,7 @@ class EditContactScreen extends StatelessWidget {
       }
 
       final provider = Provider.of<ContactProvider>(context, listen: false);
-      String cleanedPhone =
-          phoneController.text.replaceAll(RegExp(r'\D'), '');
+      String cleanedPhone = phoneController.text.replaceAll(RegExp(r'\D'), '');
 
       final newContact = Contact(
         id: contact?.id,

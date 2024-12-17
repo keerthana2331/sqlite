@@ -36,7 +36,7 @@ class EditContactScreen extends StatelessWidget {
       if (nameController.text.trim().isEmpty ||
           validatePhoneNumber(context, phoneController.text) != null) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Please correct the errors'),
+          content: Text('Number already exists'),
           backgroundColor: Colors.red,
         ));
         return;
@@ -61,17 +61,24 @@ class EditContactScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(contact != null ? 'Edit Contact' : 'Add Contact'),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF42A5F5), Color(0xFF2196F3)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+        ),
         elevation: 0,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF2196F3), Color(0xFF42A5F5)],
+            colors: [Color(0xFF42A5F5), Color(0xFF2196F3)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -81,27 +88,33 @@ class EditContactScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Card(
-                elevation: 10,
+                elevation: 8,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                  padding: const EdgeInsets.all(24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Column(
                         children: [
-                          const Icon(Icons.person_add,
-                              size: 80, color: Colors.blueAccent),
+                          const CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.blueAccent,
+                            child: Icon(
+                              Icons.person_add_alt_1,
+                              size: 50,
+                              color: Colors.white,
+                            ),
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             contact == null
                                 ? 'Create New Contact'
                                 : 'Update Contact',
                             style: const TextStyle(
-                              fontSize: 24,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
@@ -148,41 +161,35 @@ class EditContactScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 40),
-                      GestureDetector(
+                      InkWell(
                         onTap: () => saveContact(context),
-                        child: AnimatedScale(
-                          scale: 1.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Colors.blueAccent,
-                                  Colors.lightBlue,
-                                ],
-                              ),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 8,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            gradient: const LinearGradient(
+                              colors: [Colors.lightBlue, Colors.blueAccent],
                             ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 24),
-                            child: Text(
-                              contact == null ? 'Add Contact' : 'Save Changes',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                letterSpacing: 1.2,
-                                decoration: TextDecoration.none,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
                               ),
-                              textAlign: TextAlign.center,
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 24),
+                          child: Text(
+                            contact == null ? 'Add Contact' : 'Save Changes',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 1.2,
+                              decoration: TextDecoration.none,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
@@ -193,6 +200,12 @@ class EditContactScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => saveContact(context),
+        label: Text(contact == null ? 'Add' : 'Save'),
+        icon: const Icon(Icons.save),
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }

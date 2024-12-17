@@ -20,12 +20,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SQLite Contact Manager',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
         scaffoldBackgroundColor: Colors.grey.shade100,
         appBarTheme: const AppBarTheme(
-          elevation: 4,
-          backgroundColor: Colors.blueAccent,
+          elevation: 0,
+          backgroundColor: Colors.indigo,
           centerTitle: true,
+        ),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
       debugShowCheckedModeBanner: false,
@@ -44,18 +47,18 @@ class ContactListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'My Contacts',
+          'Contacts',
           style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
         ),
       ),
       body: provider.contacts.isEmpty
-          ? buildEmptyState()
+          ? _buildEmptyState()
           : ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               itemCount: provider.contacts.length,
               itemBuilder: (context, index) {
                 final contact = provider.contacts[index];
-                return buildContactCard(context, provider, contact);
+                return _buildContactCard(context, provider, contact);
               },
             ),
       floatingActionButton: FloatingActionButton.extended(
@@ -69,48 +72,43 @@ class ContactListScreen extends StatelessWidget {
         },
         label: const Text('Add Contact'),
         icon: const Icon(Icons.add),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.indigo,
       ),
     );
   }
 
-  Widget buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.contact_page,
-            size: 100,
-            color: Colors.blueAccent.withOpacity(0.7),
+  Widget _buildEmptyState() {
+  return Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
+          'No Contacts Found!',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.indigo,
           ),
-          const SizedBox(height: 16),
-          const Text(
-            'No Contacts Yet!',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Tap the + button to add new contacts.',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Tap the + button to create a new contact.',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      ],
+    ),
+  );
+}
 
-  Widget buildContactCard(
+
+  Widget _buildContactCard(
       BuildContext context, ContactProvider provider, dynamic contact) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.symmetric(vertical: 8),
+      elevation: 3,
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -120,12 +118,12 @@ class ContactListScreen extends StatelessWidget {
           );
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
               CircleAvatar(
                 radius: 28,
-                backgroundColor: Colors.blueAccent.shade100,
+                backgroundColor: Colors.indigo.shade100,
                 child: Text(
                   contact.name.isNotEmpty ? contact.name[0].toUpperCase() : '?',
                   style: const TextStyle(
@@ -159,7 +157,7 @@ class ContactListScreen extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.edit, color: Colors.blueAccent),
+                icon: const Icon(Icons.edit, color: Colors.indigo),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -171,8 +169,9 @@ class ContactListScreen extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.redAccent),
-                onPressed: () =>
-                    showDeleteConfirmation(context, provider, contact.id!),
+                onPressed: () {
+                  _showDeleteConfirmation(context, provider, contact.id!);
+                },
               ),
             ],
           ),
@@ -181,14 +180,14 @@ class ContactListScreen extends StatelessWidget {
     );
   }
 
-  void showDeleteConfirmation(
+  void _showDeleteConfirmation(
       BuildContext context, ContactProvider provider, int contactId) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           title: const Text('Delete Contact'),
           content: const Text(
@@ -199,12 +198,14 @@ class ContactListScreen extends StatelessWidget {
               onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 provider.deleteContact(contactId);
                 Navigator.pop(context);
               },
-              style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+              ),
               child: const Text('Delete'),
             ),
           ],
